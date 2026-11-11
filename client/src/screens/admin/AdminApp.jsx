@@ -163,7 +163,7 @@ function Inbox() {
             <button className="icon-btn" onClick={() => remove(f.id)} aria-label="Apagar mensagem"><Icon name="trash" size={20} /></button>
           </div>
           <p style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{f.message}</p>
-          <time className="small muted">{new Date(f.createdAt.replace(' ', 'T') + 'Z').toLocaleString('pt-BR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</time>
+          <time className="small muted">{new Date(f.createdAt).toLocaleString('pt-BR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</time>
         </article>
       ))}
     </div>

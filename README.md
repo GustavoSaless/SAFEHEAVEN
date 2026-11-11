@@ -4,7 +4,7 @@ App de estudo e bem-estar para estudantes neurodivergentes (antigo PAPP), agora 
 
 ```
 client/   app (React + Vite + Capacitor): o que vira o APK
-server/   API (Node + Express + SQLite + Socket.IO)
+server/   API (Node + Express + Postgres + Socket.IO)
 ```
 
 ## Perfis de acesso
@@ -22,36 +22,46 @@ Por sigilo profissional, o admin **não** tem acesso a conversas, diários nem r
 
 ## Rodar no computador
 
+Precisa só do Node.js 24. O banco é um Postgres embutido (PGlite), que grava em `server/data/pglite`: não é preciso instalar banco nenhum.
+
 ```bash
-# 1) servidor
 cd server
 npm install
-cp .env.example .env      # preencha JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD e ANTHROPIC_API_KEY
-npm run dev               # http://localhost:5001
+cp .env.example .env      # preencha JWT_SECRET, ADMIN_EMAIL e ADMIN_PASSWORD (deixe DATABASE_URL vazio)
+npm run dev               # API em http://localhost:5001
 npm test                  # 9 testes: contas, chaves, chat ao vivo, receitas, admin
 
-# 2) app (em outro terminal)
+# em outro terminal
 cd client
 npm install
 echo "VITE_API_URL=http://localhost:5001/api" > .env
-npm run dev               # abra o endereço que aparecer
+npm run dev               # app em http://localhost:5173
 ```
 
-Para testar o chat ao vivo, abra o app em duas janelas (uma anônima): uma com a psicóloga e outra com o paciente.
+No Windows, crie o `.env` com o Bloco de Notas, não com `echo` no PowerShell (ele salva num formato que o Node não lê).
 
-## Publicar o servidor (Render)
+## Publicar de graça (Render + Neon)
 
-1. Suba a pasta `server` (Build: `npm install`, Start: `npm start`).
-2. Em **Environment**, cadastre as variáveis do `.env.example`. `JWT_SECRET` é obrigatória: o servidor não sobe sem ela em produção (`NODE_ENV=production`).
-3. Adicione um **Disk** (ex.: montado em `/var/data`) e defina `DB_FILE=/var/data/safehaven.db`. Sem disco persistente, o Render apaga o banco a cada deploy.
+O servidor entrega o app e a API no mesmo endereço, então é **um serviço só** no Render.
 
-Para trazer as contas e tarefas do backend antigo: `npm run import-old -- caminho/papp_database.json`. As senhas antigas continuam valendo.
+1. **Banco:** crie um projeto no [Neon](https://neon.com) (grátis, sem cartão) e copie a connection string `postgresql://...`.
+   O Postgres gratuito do próprio Render também funciona, mas é apagado depois de 30 dias.
+2. **Código:** suba esta pasta para um repositório no GitHub (pode ser privado). **Não envie** `node_modules`, `.env` nem `server/data`.
+3. **Render:** New > **Blueprint** > escolha o repositório. Ele lê o `render.yaml` e pede:
+   - `DATABASE_URL`: a connection string do Neon
+   - `ADMIN_EMAIL` e `ADMIN_PASSWORD`: seu login de administrador
+   - `ANTHROPIC_API_KEY`: opcional, liga o tutor Papp
+4. Em alguns minutos o app fica em `https://safehaven-XXXX.onrender.com`. Mande esse link para quem for testar: abre no navegador do celular.
+
+O plano gratuito do Render "dorme" após 15 minutos sem uso. A primeira visita depois disso leva cerca de 1 minuto; o app mostra um aviso enquanto o servidor acorda.
+
+Para atualizar o app depois, envie os arquivos alterados ao GitHub: o Render publica sozinho.
 
 ## Gerar o APK
 
 ```bash
 cd client
-echo "VITE_API_URL=https://SEU-SERVIDOR.onrender.com/api" > .env
+echo "VITE_API_URL=https://SEU-APP.onrender.com/api" > .env
 npm run build
 npx cap add android                         # só na primeira vez
 npx @capacitor/assets generate --android    # ícone e splash a partir de client/resources
@@ -59,9 +69,7 @@ npm run android                             # build + cap sync
 npx cap open android                        # no Android Studio: Build > Build APK(s)
 ```
 
-O pacote mudou de `com.papp.app` para `com.safehaven.app`, então ele instala como um **app novo**, ao lado do PAPP. Se preferir que ele substitua o PAPP, volte o `appId` em `client/capacitor.config.json` para `com.papp.app` antes do `cap add android`.
-
-Para os lembretes de tarefa com o botão "Iniciar Pomodoro" funcionarem com o app fechado, confira se o `AndroidManifest.xml` gerado tem a permissão `POST_NOTIFICATIONS` (o plugin `@capacitor/local-notifications` costuma adicionar sozinho).
+O pacote é `com.safehaven.app` (instala ao lado do PAPP antigo). Desde setembro de 2026, no Brasil, apps instalados por fora da Play Store precisam vir de um desenvolvedor verificado no Android Developer Console.
 
 ## O que mudou em relação ao PAPP
 
@@ -75,7 +83,7 @@ Para os lembretes de tarefa com o botão "Iniciar Pomodoro" funcionarem com o ap
 
 **Correções técnicas**
 - O tutor chamava a Anthropic direto do celular, sem chave, e por isso sempre falhava. Agora a chamada passa pelo servidor, com a chave protegida, histórico da conversa e limite de mensagens por hora.
-- O servidor antigo tinha o segredo do JWT escrito no código e gravava tudo num arquivo JSON a cada requisição. Trocado por variável de ambiente e SQLite.
+- O servidor antigo tinha o segredo do JWT escrito no código e gravava tudo num arquivo JSON a cada requisição. Trocado por variável de ambiente e Postgres.
 - O app antigo chamava rotas que o servidor não tinha (`/chat`, `/auth/me`, `/user/bamboo`) e esperava formatos de resposta diferentes. Agora os dois lados batem, e os testes cobrem isso.
 
 **Velocidade e responsividade**
@@ -92,3 +100,4 @@ Para os lembretes de tarefa com o botão "Iniciar Pomodoro" funcionarem com o ap
 - **Cores:** variáveis no topo de `client/src/styles.css`.
 - **Mascote:** `client/src/components/Mascot.jsx` (SVG com 7 expressões: idle, happy, focus, eating, calm, care, wave).
 - **Personalidade do tutor:** `server/src/ai.js`.
+- **Banco de dados:** tabelas em `server/src/db.js`.

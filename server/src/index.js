@@ -1,5 +1,4 @@
 import fs from 'node:fs'
-import path from 'node:path'
 import { loadConfig } from './config.js'
 import { openDb } from './db.js'
 import { createApp, seedAdmin } from './app.js'
@@ -9,8 +8,9 @@ try {
 } catch {}
 
 const config = loadConfig()
-fs.mkdirSync(path.dirname(config.dbFile), { recursive: true })
-const db = openDb(config.dbFile)
+if (!config.databaseUrl) fs.mkdirSync(config.dataDir, { recursive: true })
+const db = await openDb(config.databaseUrl ? { url: config.databaseUrl } : { dir: config.dataDir })
+console.log(`Banco: ${db.kind}`)
 
 if (await seedAdmin(db, config)) console.log(`Administrador pronto: ${config.adminEmail}`)
 else console.warn('[aviso] ADMIN_EMAIL e ADMIN_PASSWORD não definidos: nenhum administrador foi criado.')

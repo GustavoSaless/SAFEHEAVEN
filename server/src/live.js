@@ -4,108 +4,127 @@ import { Server } from 'socket.io'
   Chat ao vivo entre paciente e psicóloga.
   Cada par conversa numa sala "care:<id do paciente>". Só entra na sala quem faz parte do vínculo.
 */
-export function attachLive({ server, db, config, userFromToken, carePair }) {
+export function attachLive({ server, db, config, userFromToken, userById, carePair }) {
   const io = new Server(server, { cors: { origin: config.corsOrigin } })
   const online = new Map() // userId -> quantidade de conexões abertas
   const room = (patientId) => `care:${patientId}`
   const own = (userId) => `user:${userId}`
+  const iso = (d) => (d instanceof Date ? d.toISOString() : d ?? null)
 
   const out = (m) => ({
     id: m.id,
     patientId: m.patient_id,
     senderId: m.sender_id,
     body: m.body,
-    createdAt: m.created_at,
-    readAt: m.read_at,
+    createdAt: iso(m.created_at),
+    readAt: iso(m.read_at),
   })
 
-  function history(pair, limit = 300) {
-    return db
-      .prepare(
-        `SELECT * FROM (SELECT * FROM live_messages WHERE patient_id = ? AND psychologist_id = ? ORDER BY id DESC LIMIT ?) ORDER BY id`,
-      )
-      .all(pair.patientId, pair.psychologistId, limit)
-      .map(out)
+  async function history(pair, limit = 300) {
+    const rows = await db.all(
+      `SELECT * FROM (SELECT * FROM live_messages WHERE patient_id = $1 AND psychologist_id = $2 ORDER BY id DESC LIMIT $3) t ORDER BY id`,
+      [pair.patientId, pair.psychologistId, limit],
+    )
+    return rows.map(out)
   }
 
-  function send(pair, senderId, body) {
-    const info = db
-      .prepare('INSERT INTO live_messages (patient_id, psychologist_id, sender_id, body) VALUES (?, ?, ?, ?)')
-      .run(pair.patientId, pair.psychologistId, senderId, body)
-    const message = out(db.prepare('SELECT * FROM live_messages WHERE id = ?').get(info.lastInsertRowid))
+  async function send(pair, senderId, body) {
+    const row = await db.one(
+      'INSERT INTO live_messages (patient_id, psychologist_id, sender_id, body) VALUES ($1, $2, $3, $4) RETURNING *',
+      [pair.patientId, pair.psychologistId, senderId, body],
+    )
+    const message = out(row)
     io.to(room(pair.patientId)).emit('live:message', message)
     return message
   }
 
-  function markRead(pair, readerId) {
-    const info = db
-      .prepare(
-        `UPDATE live_messages SET read_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
-         WHERE patient_id = ? AND psychologist_id = ? AND sender_id != ? AND read_at IS NULL`,
-      )
-      .run(pair.patientId, pair.psychologistId, readerId)
-    if (info.changes) io.to(room(pair.patientId)).emit('live:read', { patientId: pair.patientId, readerId })
+  async function markRead(pair, readerId) {
+    const { changes } = await db.run(
+      `UPDATE live_messages SET read_at = now()
+       WHERE patient_id = $1 AND psychologist_id = $2 AND sender_id != $3 AND read_at IS NULL`,
+      [pair.patientId, pair.psychologistId, readerId],
+    )
+    if (changes) io.to(room(pair.patientId)).emit('live:read', { patientId: pair.patientId, readerId })
   }
 
   const isOnline = (userId) => (online.get(userId) || 0) > 0
 
   // Quem precisa saber que este usuário entrou ou saiu.
-  function presenceRooms(user) {
+  async function presenceRooms(user) {
     if (user.role === 'patient') return [room(user.id)]
-    if (user.role === 'psychologist')
-      return db.prepare('SELECT id FROM users WHERE psychologist_id = ?').all(user.id).map((p) => room(p.id))
+    if (user.role === 'psychologist') {
+      const rows = await db.all('SELECT id FROM users WHERE psychologist_id = $1', [user.id])
+      return rows.map((p) => room(p.id))
+    }
     return []
   }
 
-  io.use((socket, next) => {
-    const user = userFromToken(socket.handshake.auth?.token || '')
-    if (!user || user.status === 'blocked') return next(new Error('unauthorized'))
-    socket.data.userId = user.id
-    next()
+  // Confere de novo no banco a cada ação: vínculo encerrado ou conta bloqueada param na hora.
+  async function pairFor(userId, patientId) {
+    const fresh = await userById(userId)
+    return fresh && fresh.status !== 'blocked' ? carePair(fresh, patientId) : null
+  }
+
+  io.use(async (socket, next) => {
+    try {
+      const user = await userFromToken(socket.handshake.auth?.token || '')
+      if (!user || user.status === 'blocked') return next(new Error('unauthorized'))
+      socket.data.userId = user.id
+      next()
+    } catch {
+      next(new Error('unavailable'))
+    }
   })
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     const userId = socket.data.userId
-    const me = () => db.prepare('SELECT * FROM users WHERE id = ?').get(userId)
-    const user = me()
-    if (!user) return socket.disconnect(true)
-
-    socket.join(own(userId))
-    const rooms = presenceRooms(user)
-    if (user.role !== 'patient' || user.psychologist_id) rooms.forEach((r) => socket.join(r))
-
-    online.set(userId, (online.get(userId) || 0) + 1)
-    if (online.get(userId) === 1) rooms.forEach((r) => socket.to(r).emit('presence', { userId, online: true }))
-
-    socket.on('live:send', (payload, ack) => {
+    // Registra os eventos antes de qualquer espera, para não perder mensagens enviadas logo na conexão.
+    socket.on('live:send', async (payload, ack) => {
       const reply = typeof ack === 'function' ? ack : () => {}
-      const fresh = me()
-      const pair = fresh && fresh.status !== 'blocked' ? carePair(fresh, payload?.patientId) : null
-      const body = typeof payload?.body === 'string' ? payload.body.trim().slice(0, 2000) : ''
-      if (!pair) return reply({ ok: false, error: 'Você não participa desta conversa.' })
-      if (!body) return reply({ ok: false, error: 'Mensagem vazia.' })
-      reply({ ok: true, message: send(pair, userId, body) })
+      try {
+        const pair = await pairFor(userId, payload?.patientId)
+        const body = typeof payload?.body === 'string' ? payload.body.trim().slice(0, 2000) : ''
+        if (!pair) return reply({ ok: false, error: 'Você não participa desta conversa.' })
+        if (!body) return reply({ ok: false, error: 'Mensagem vazia.' })
+        reply({ ok: true, message: await send(pair, userId, body) })
+      } catch (err) {
+        console.error('[chat]', err)
+        reply({ ok: false, error: 'Não foi possível enviar. Tente de novo.' })
+      }
     })
 
-    socket.on('live:typing', (payload) => {
-      const fresh = me()
-      const pair = fresh ? carePair(fresh, payload?.patientId) : null
+    socket.on('live:typing', async (payload) => {
+      const pair = await pairFor(userId, payload?.patientId).catch(() => null)
       if (pair) socket.to(room(pair.patientId)).emit('live:typing', { patientId: pair.patientId, userId })
     })
 
-    socket.on('live:read', (payload) => {
-      const fresh = me()
-      const pair = fresh ? carePair(fresh, payload?.patientId) : null
-      if (pair) markRead(pair, userId)
+    socket.on('live:read', async (payload) => {
+      const pair = await pairFor(userId, payload?.patientId).catch(() => null)
+      if (pair) await markRead(pair, userId).catch(() => {})
     })
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
       const left = (online.get(userId) || 1) - 1
       if (left > 0) return online.set(userId, left)
       online.delete(userId)
-      const fresh = me()
-      if (fresh) presenceRooms(fresh).forEach((r) => io.to(r).emit('presence', { userId, online: false }))
+      try {
+        const fresh = await userById(userId)
+        if (fresh) (await presenceRooms(fresh)).forEach((r) => io.to(r).emit('presence', { userId, online: false }))
+      } catch {}
     })
+
+    socket.join(own(userId))
+    online.set(userId, (online.get(userId) || 0) + 1)
+    try {
+      const user = await userById(userId)
+      if (!user) return socket.disconnect(true)
+      const rooms = await presenceRooms(user)
+      if (user.role !== 'patient' || user.psychologist_id) rooms.forEach((r) => socket.join(r))
+      if (online.get(userId) === 1) rooms.forEach((r) => socket.to(r).emit('presence', { userId, online: true }))
+      socket.emit('ready')
+    } catch (err) {
+      console.error('[chat]', err)
+    }
   })
 
   return {

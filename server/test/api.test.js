@@ -46,13 +46,14 @@ before(async () => {
     ANTHROPIC_BASE_URL: `http://127.0.0.1:${aiPort}`,
     DISABLE_RATE_LIMIT: 'true',
   })
-  db = openDb(':memory:')
+  db = await openDb()
   await seedAdmin(db, config)
   server = createApp({ db, config }).server
   base = `http://127.0.0.1:${await listen(server)}`
 })
 
-after(() => {
+after(async () => {
+  await db.close()
   server.closeAllConnections?.()
   server.close()
   fakeAi.close()
@@ -159,7 +160,7 @@ test('chave de acesso: gera, vincula uma única vez, recusa inválidas', async (
   const wrong = await call('/auth/register', { method: 'POST', body: { name: 'Davi', email: 'davi@x.com', password: 'senha-davi', accessKey: 'SH-AAAA-BBBB' } })
   assert.equal(wrong.status, 400)
   // chave errada não deixa conta órfã para trás
-  assert.equal(db.prepare("SELECT COUNT(*) AS n FROM users WHERE email = 'davi@x.com'").get().n, 0)
+  assert.equal((await db.one("SELECT count(*)::int AS n FROM users WHERE email = 'davi@x.com'")).n, 0)
 
   const davi = await call('/auth/register', {
     method: 'POST',
@@ -178,7 +179,7 @@ test('chave de acesso: gera, vincula uma única vez, recusa inválidas', async (
   assert.equal((await call('/user/link', { method: 'POST', token: state.bia.token, body: { accessKey: k2.code } })).status, 400)
 
   const k3 = (await call('/pro/keys', { method: 'POST', token: pt, body: {} })).data.key
-  db.prepare("UPDATE access_keys SET expires_at = '2020-01-01T00:00:00.000Z' WHERE id = ?").run(k3.id)
+  await db.run("UPDATE access_keys SET expires_at = '2020-01-01T00:00:00Z' WHERE id = $1", [k3.id])
   assert.equal((await call('/user/link', { method: 'POST', token: state.bia.token, body: { accessKey: k3.code } })).status, 400)
 
   const keys = (await call('/pro/keys', { token: pt })).data.keys

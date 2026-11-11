@@ -1,6 +1,8 @@
 // Camada de rede: token, cache da sessão e aviso de servidor lento.
-export const API_URL = (import.meta.env.VITE_API_URL || 'https://papp-backend.onrender.com/api').replace(/\/$/, '')
-export const SOCKET_URL = API_URL.replace(/\/api$/, '')
+// Sem VITE_API_URL, o app fala com o próprio endereço onde está hospedado (o servidor entrega o app e a API juntos).
+// No APK, defina VITE_API_URL=https://SEU-APP.onrender.com/api antes do build.
+export const API_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '')
+export const SOCKET_URL = API_URL.replace(/\/api$/, '') || undefined
 
 const TOKEN_KEY = 'sh_token'
 const USER_KEY = 'sh_user'

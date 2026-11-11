@@ -1,0 +1,26 @@
+# Render Blueprint: cria o SafeHaven (app + API) num serviço gratuito.
+# No Render: New > Blueprint > escolha este repositório.
+services:
+  - type: web
+    name: safehaven
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci --include=dev --prefix client && npm run build --prefix client && npm ci --omit=dev --prefix server
+    startCommand: node server/src/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
