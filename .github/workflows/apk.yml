@@ -9,6 +9,9 @@ on:
         description: "Endereço da API, terminando em /api (ex.: https://safehaven-a1b2.onrender.com/api)"
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -69,3 +72,17 @@ jobs:
           name: SafeHaven-apk
           path: SafeHaven.apk
           if-no-files-found: error
+
+      # Publica o APK numa Release fixa: o link de download não muda entre versões.
+      - name: Publicar na Release "beta"
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+          API_URL: ${{ inputs.api_url }}
+        run: |
+          gh release delete beta --yes --cleanup-tag || true
+          gh release create beta SafeHaven.apk \
+            --title "SafeHaven (beta)" \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --notes "APK de teste do SafeHaven. Servidor: $API_URL. Gerado em $(date -u '+%d/%m/%Y %H:%M') UTC."
