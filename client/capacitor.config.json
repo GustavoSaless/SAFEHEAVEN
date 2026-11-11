@@ -1,0 +1,8 @@
+{
+  "appId": "com.safehaven.app",
+  "appName": "SafeHaven",
+  "webDir": "dist",
+  "plugins": {
+    "LocalNotifications": { "iconColor": "#2C7A55" }
+  }
+}
