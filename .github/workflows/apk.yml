@@ -1,0 +1,71 @@
+# Gera o APK do SafeHaven sem precisar do Android Studio.
+# GitHub > Actions > "Gerar APK" > Run workflow > cole o endereço da API (https://SEU-APP.onrender.com/api).
+name: Gerar APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: "Endereço da API, terminando em /api (ex.: https://safehaven-a1b2.onrender.com/api)"
+        required: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Conferir o endereço da API
+        env:
+          API_URL: ${{ inputs.api_url }}
+        run: |
+          case "$API_URL" in
+            https://*/api) echo "API: $API_URL" ;;
+            *) echo "::error::O endereço precisa começar com https:// e terminar em /api"; exit 1 ;;
+          esac
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar o app web
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ inputs.api_url }}
+
+      - name: Criar o projeto Android
+        run: npx cap add android
+
+      - name: Ícone e tela de abertura
+        run: npx --yes @capacitor/assets generate --android
+        continue-on-error: true
+
+      - name: Copiar o app para o Android
+        run: npx cap sync android
+
+      - name: Compilar o APK
+        working-directory: client/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/SafeHaven.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SafeHaven-apk
+          path: SafeHaven.apk
+          if-no-files-found: error
