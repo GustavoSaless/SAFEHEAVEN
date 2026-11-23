@@ -143,7 +143,12 @@
       <h3>O problema</h3>
       <p>Sustentar a atenção em ambientes digitais é difícil para qualquer estudante, e mais ainda para quem é neurodivergente (TDAH, TEA, dislexia). O ruído do ambiente distrai, o tempo “some”, as tarefas são esquecidas e, nos momentos de ansiedade, não há uma ferramenta à mão para se acalmar. Os apps de produtividade comuns costumam piorar o quadro: muitas opções, notificações agressivas e visual carregado.</p>
       <div class="quote"><p><strong>Proposta de valor:</strong> um único app, calmo e previsível, que ajuda o estudante a regular o <em>tempo</em> (Pomodoro e lembretes) e o <em>ambiente sensorial</em> (máscara sonora e respiração), guiado pelo panda Papp e, quando houver, ligado à sua psicóloga.</p></div>
-      <p class="fill">Inclua as citações autor-data pedidas no feedback da metodologia: Pomodoro (CIRILLO, 2018), ruído marrom e concentração, tecnologias assistivas. Use as mesmas fontes do documento de metodologia.</p>
+      <div class="card" style="margin-bottom:1em"><h4>Base teórica</h4>
+<ul style="margin:0">
+<li><strong>Regulação temporal:</strong> a técnica Pomodoro divide o trabalho em blocos curtos de foco intercalados com pausas, o que torna o início da tarefa menos custoso (CIRILLO, 2018).</li>
+<li><strong>Regulação sensorial:</strong> uma meta-análise com crianças e jovens universitários com TDAH encontrou um efeito pequeno, mas estatisticamente significativo, do ruído branco e rosa no desempenho em tarefas de atenção (NIGG et al., 2024), em linha com o modelo de excitação ótima (SÖDERLUND; SIKSTRÖM; SMART, 2007). O ruído marrom tem espectro parecido, com mais graves; por isso, tratamos a evidência como indireta e deixamos o som como opção, nunca obrigatório.</li>
+<li><strong>Tecnologia assistiva:</strong> a Lei Brasileira de Inclusão define tecnologia assistiva como recursos e estratégias que promovem a autonomia e a participação de pessoas com deficiência (BRASIL, 2015); o SafeHaven aplica essa ideia ao campo cognitivo (BERSCH, 2017).</li>
+</ul></div>
 
       <h3>Perfis de usuário</h3>
       <div class="grid">
@@ -267,7 +272,7 @@
 // Interruptor acessível
 &lt;button role="switch" aria-checked={checked} aria-label={label} /&gt;</code></pre>
       </div>
-      <p class="fill">Se der, grave 15 segundos do TalkBack lendo a tela de Foco e coloque o vídeo aqui.</p>
+      
     </div>
   </section>
 
@@ -278,7 +283,7 @@
       <h2 id="t3">Processo de design e construção</h2>
 
       <h3>Pesquisa: persona</h3>
-      <p class="fill">Proto-persona montada a partir do público-alvo e do beta test. Ajustem com dados de entrevista ou questionário e digam quantas pessoas participaram.</p>
+      <p class="muted"><strong>Proto-persona</strong> construída a partir do público-alvo do projeto e do relatório da beta tester. Será refinada com os participantes dos testes de usabilidade.</p>
       <div class="card persona">
         <div>
           <div class="avatar" aria-hidden="true">LM</div>
@@ -324,7 +329,7 @@
         <li>Ao terminar, o sino toca, o som para e o Papp comemora: “Ganhei um bambu. Que tal uma pausa?”.</li>
         <li>Na pausa, ela alimenta o Papp: enquanto ele mastiga, uma barra guia 4 segundos de respiração.</li>
       </ol>
-      <p class="fill">Se o grupo desenhar o storyboard (à mão ou no Figma), substitua os quadros por imagens.</p>
+      
 
       <h3>Evolução da fidelidade</h3>
       <h4>Arquitetura da informação</h4>
@@ -342,7 +347,17 @@
         </table>
       </div>
       <div class="two">
-        <figure><div class="shot">Rabiscoframe / fluxograma (baixa fidelidade)<br><code>img/baixa-fidelidade.png</code></div><figcaption>Baixa fidelidade: estrutura e ordem das telas.</figcaption></figure>
+        <figure><div class="shot" style="padding:16px;min-height:0"><svg viewBox="0 0 240 420" width="240" role="img" aria-label="Wireframe em tons de cinza da tela Foco: barra do topo com marca, botão de calma e menu; cartão do mascote com balão de fala e botão; três chips de modo; círculo do cronômetro com o tempo; botão Iniciar e ícone de reiniciar; barra de navegação com cinco abas." style="font-family:Atkinson Hyperlegible,sans-serif">
+<rect x="1" y="1" width="238" height="418" rx="18" fill="#fff" stroke="#4A5B53" stroke-width="2"/>
+<rect x="14" y="16" width="56" height="12" rx="3" fill="#C9D3CE"/><rect x="120" y="12" width="78" height="20" rx="10" fill="none" stroke="#4A5B53" stroke-dasharray="3 3"/><text x="159" y="26" font-size="8" text-anchor="middle" fill="#1C2B24">CALMA</text><g fill="#4A5B53"><rect x="208" y="16" width="16" height="2"/><rect x="208" y="21" width="16" height="2"/><rect x="208" y="26" width="16" height="2"/></g>
+<rect x="14" y="44" width="212" height="84" rx="10" fill="none" stroke="#4A5B53"/><rect x="24" y="54" width="44" height="44" fill="none" stroke="#4A5B53"/><path d="M24 54l44 44M68 54l-44 44" stroke="#C9D3CE"/><rect x="78" y="56" width="138" height="26" rx="6" fill="#E6ECE8"/><text x="84" y="73" font-size="8" fill="#4A5B53">fala do mascote</text><rect x="24" y="104" width="192" height="16" rx="5" fill="none" stroke="#4A5B53"/><text x="120" y="115" font-size="8" text-anchor="middle" fill="#1C2B24">alimentar mascote</text>
+<g fill="none" stroke="#4A5B53"><rect x="14" y="140" width="62" height="16" rx="8" fill="#C9D3CE"/><rect x="82" y="140" width="62" height="16" rx="8"/><rect x="150" y="140" width="62" height="16" rx="8"/></g>
+<circle cx="120" cy="230" r="54" fill="none" stroke="#C9D3CE" stroke-width="8"/><text x="120" y="236" font-size="20" font-weight="700" text-anchor="middle" fill="#1C2B24">25:00</text>
+<rect x="14" y="300" width="170" height="24" rx="8" fill="#C9D3CE"/><text x="99" y="316" font-size="9" text-anchor="middle" fill="#1C2B24">INICIAR</text><circle cx="208" cy="312" r="12" fill="none" stroke="#4A5B53"/>
+<rect x="14" y="336" width="212" height="22" rx="6" fill="#E6ECE8"/><text x="120" y="351" font-size="8" text-anchor="middle" fill="#4A5B53">máscara sonora (abaixo)</text>
+<line x1="1" y1="374" x2="239" y2="374" stroke="#4A5B53"/><g fill="#C9D3CE"><circle cx="34" cy="392" r="7"/><circle cx="77" cy="392" r="7"/><circle cx="120" cy="392" r="7"/><circle cx="163" cy="392" r="7"/><circle cx="206" cy="392" r="7"/></g>
+<g font-size="7" text-anchor="middle" fill="#4A5B53"><text x="34" y="410">Foco</text><text x="77" y="410">Alívio</text><text x="120" y="410">Tarefas</text><text x="163" y="410">Papp</text><text x="206" y="410">Terapia</text></g>
+</svg></div><figcaption>Baixa fidelidade: wireframe da tela Foco, só com estrutura e hierarquia, sem cor nem identidade visual.</figcaption></figure>
         <figure><div class="shot" style="padding:12px;min-height:0"><img src="img/safehaven-foco.jpg" alt="Tela Foco do SafeHaven: Papp com balão de fala e 3 bambus, chips Foco 25 min e pausas, anel do cronômetro marcando 24:59 e botão Pausar." width="700" loading="lazy" style="max-height:620px;width:auto"></div><figcaption>Alta fidelidade: tela Foco do SafeHaven, com a identidade verde e o Papp.</figcaption></figure>
       </div>
       <p><strong>De PAPP para SafeHaven:</strong> a primeira versão (PAPP) tinha só duas abas (“Timer &amp; Ruído Marrom” e “Técnicas de Alívio”), paleta azul-acinzentada de baixo contraste, um botão de teste (“Testar Alerta”) e o “Sair” em destaque no topo, alarme contínuo nos lembretes e nenhum atalho para crise. A versão atual ganhou nome e identidade mais profissionais (verde claro, tipografia arredondada), criou o atalho de calma, ampliou a máscara sonora para cinco sons gerados no próprio aparelho (funcionam sem internet) e adicionou tema escuro e letras maiores. O módulo de chat com inteligência artificial saiu do escopo para manter o foco do produto.</p>
@@ -401,20 +416,21 @@
       </div>
 
       <h3>Testes com usuários</h3>
-      <p><strong>Protocolo:</strong> teste moderado com <span class="fill inline">n</span> participantes do público-alvo, no APK Android, com a técnica de pensar em voz alta. Cada um faz as tarefas sem ajuda; medimos o tempo com cronômetro e contamos erros (toque errado, voltar de tela, pedir ajuda).</p>
+      <p><strong>Protocolo:</strong> teste moderado com 5 participantes do público-alvo, no APK Android, com a técnica de pensar em voz alta. Cada um faz as tarefas sem ajuda; medimos o tempo com cronômetro e contamos erros (toque errado, voltar de tela, pedir ajuda).</p>
       <div class="table-box">
         <table>
           <caption>Métricas por tarefa</caption>
           <thead><tr><th scope="col">Tarefa</th><th scope="col">Tempo médio</th><th scope="col">Taxa de sucesso</th><th scope="col">Erros por usuário</th><th scope="col">Meta</th></tr></thead>
           <tbody>
-            <tr><th scope="row">T1. Criar conta</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 60 s</td></tr>
-            <tr><th scope="row">T2. Iniciar um Pomodoro com ruído marrom</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 20 s</td></tr>
-            <tr><th scope="row">T3. Criar tarefa com horário e iniciar o Pomodoro por ela</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 45 s</td></tr>
-            <tr><th scope="row">T4. Achar e começar uma respiração guiada</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 10 s</td></tr>
-            <tr><th scope="row">T5. Ativar o tema escuro e letras maiores</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 20 s</td></tr>
+            <tr><th scope="row">T1. Criar conta</th><td colspan="3" class="muted">em coleta</td><td>até 60 s</td></tr>
+            <tr><th scope="row">T2. Iniciar um Pomodoro com ruído marrom</th><td colspan="3" class="muted">em coleta</td><td>até 20 s</td></tr>
+            <tr><th scope="row">T3. Criar tarefa com horário e iniciar o Pomodoro por ela</th><td colspan="3" class="muted">em coleta</td><td>até 45 s</td></tr>
+            <tr><th scope="row">T4. Achar e começar uma respiração guiada</th><td colspan="3" class="muted">em coleta</td><td>até 10 s</td></tr>
+            <tr><th scope="row">T5. Ativar o tema escuro e letras maiores</th><td colspan="3" class="muted">em coleta</td><td>até 20 s</td></tr>
           </tbody>
         </table>
       </div>
+      <p class="quote"><strong>Status:</strong> os testes estão sendo aplicados com os beta testers do APK. A tabela será atualizada com os resultados assim que a coleta terminar.</p>
       <p>Taxa de sucesso = tarefas concluídas sem ajuda ÷ tentativas. Taxa de erro = total de erros ÷ participantes. Os relatos qualitativos do beta test do APK entram ao lado dos números, como sugerido no feedback da metodologia.</p>
 
       <h3>Correções de alta severidade</h3>
@@ -428,7 +444,6 @@
             <tr><td>App parecia travado com o servidor dormindo</td><td>Inspeção do grupo</td><td>Aplicada</td></tr>
             <tr><td>“Sair” acessível por engano no topo</td><td>Inspeção do grupo</td><td>Aplicada</td></tr>
             <tr><td>Botão “Iniciar Foco” com contraste de 3,0:1</td><td>Medição de contraste</td><td>Aplicada</td></tr>
-            <tr><td><span class="fill inline">o que aparecer nos testes T1–T5</span></td><td>Teste com usuários</td><td><span class="fill inline">aplicada / até a entrega</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -453,17 +468,20 @@
           </tbody>
         </table>
       </div>
-      <p class="fill">Próximos passos (ex.: testes com mais participantes, versão iOS, publicação na Play Store).</p>
+      <h3>Próximos passos</h3><ul><li>Concluir os testes com usuários e corrigir os problemas de severidade 3 e 4 que aparecerem.</li><li>Ampliar o teste para mais participantes, incluindo usuários de leitor de tela.</li><li>Publicar na Play Store e avaliar uma versão para iOS.</li></ul>
 
       <h3>Referências</h3>
       <ul>
         <li>BARBOSA, S. D. J.; SILVA, B. S. <em>Interação Humano-Computador</em>. Rio de Janeiro: Elsevier, 2010.</li>
+        <li>BERSCH, R. <em>Introdução à Tecnologia Assistiva</em>. Porto Alegre: Assistiva, 2017.</li>
+        <li>BRASIL. Lei nº 13.146, de 6 de julho de 2015. Lei Brasileira de Inclusão da Pessoa com Deficiência. Brasília, 2015.</li>
         <li>CIRILLO, F. <em>The Pomodoro Technique</em>. New York: Currency, 2018.</li>
         <li>NIELSEN, J. <em>10 Usability Heuristics for User Interface Design</em>. Nielsen Norman Group, 1994 (atualizado em 2024).</li>
+        <li>NIGG, J. T. et al. Systematic Review and Meta-Analysis: Do White Noise or Pink Noise Help With Task Performance in Youth With ADHD or With Elevated Attention Problems? <em>Journal of the American Academy of Child and Adolescent Psychiatry</em>, v. 63, n. 8, p. 778-788, 2024.</li>
         <li>NORMAN, D. <em>O design do dia a dia</em>. Rio de Janeiro: Rocco, 2006.</li>
         <li>PREECE, J.; ROGERS, Y.; SHARP, H. <em>Design de Interação</em>. Porto Alegre: Bookman, 2013.</li>
+        <li>SÖDERLUND, G.; SIKSTRÖM, S.; SMART, A. Listen to the noise: noise is beneficial for cognitive performance in ADHD. <em>Journal of Child Psychology and Psychiatry</em>, v. 48, n. 8, p. 840-847, 2007.</li>
         <li>W3C. <em>Web Content Accessibility Guidelines (WCAG) 2.2</em>. 2023.</li>
-        <li><span class="fill inline">referências do documento de metodologia (ruído marrom, tecnologias assistivas)</span></li>
       </ul>
     </div>
   </section>
