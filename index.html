@@ -343,13 +343,13 @@
       </div>
       <div class="two">
         <figure><div class="shot">Rabiscoframe / fluxograma (baixa fidelidade)<br><code>img/baixa-fidelidade.png</code></div><figcaption>Baixa fidelidade: estrutura e ordem das telas.</figcaption></figure>
-        <figure><div class="shot">Protótipo Figma/Penpot ou print do app (alta fidelidade)<br><code>img/alta-fidelidade.png</code></div><figcaption>Alta fidelidade: identidade SafeHaven, verde claro e Papp.</figcaption></figure>
+        <figure><div class="shot" style="padding:12px;min-height:0"><img src="img/safehaven-foco.jpg" alt="Tela Foco do SafeHaven: Papp com balão de fala e 3 bambus, chips Foco 25 min e pausas, anel do cronômetro marcando 24:59 e botão Pausar." width="700" loading="lazy" style="max-height:620px;width:auto"></div><figcaption>Alta fidelidade: tela Foco do SafeHaven, com a identidade verde e o Papp.</figcaption></figure>
       </div>
-      <p><strong>De PAPP para SafeHaven:</strong> a primeira versão (PAPP) usava alarme contínuo nos lembretes e não tinha atalho para momentos de crise. A versão atual ganhou nome e identidade mais profissionais (verde claro, tipografia arredondada), criou o atalho de calma, ampliou a máscara sonora para cinco sons gerados no próprio aparelho (funcionam sem internet) e adicionou tema escuro e letras maiores. O módulo de chat com inteligência artificial saiu do escopo para manter o foco do produto.</p>
-      <p class="fill">Coloquem prints do PAPP antigo ao lado do SafeHaven para mostrar essa evolução.</p>
+      <p><strong>De PAPP para SafeHaven:</strong> a primeira versão (PAPP) tinha só duas abas (“Timer &amp; Ruído Marrom” e “Técnicas de Alívio”), paleta azul-acinzentada de baixo contraste, um botão de teste (“Testar Alerta”) e o “Sair” em destaque no topo, alarme contínuo nos lembretes e nenhum atalho para crise. A versão atual ganhou nome e identidade mais profissionais (verde claro, tipografia arredondada), criou o atalho de calma, ampliou a máscara sonora para cinco sons gerados no próprio aparelho (funcionam sem internet) e adicionou tema escuro e letras maiores. O módulo de chat com inteligência artificial saiu do escopo para manter o foco do produto.</p>
+      
 
       <h3>Princípios de Norman na tela principal (Foco)</h3>
-      <figure><div class="shot">Print da tela Foco com as áreas numeradas de 1 a 4<br><code>img/norman-foco.png</code></div></figure>
+      <figure><div class="shot" style="padding:12px;min-height:0"><img src="img/safehaven-foco.jpg" alt="Tela Foco do SafeHaven usada na análise dos princípios de Norman." width="700" loading="lazy" style="max-height:620px;width:auto"></div><figcaption>Tela Foco durante um ciclo: modo, tempo, tarefa, fala do Papp e controles à vista.</figcaption></figure>
       <div class="grid">
         <div class="card"><span class="tag">1 · Visibilidade</span><p>O modo atual (Foco 25 min, pausas) está escrito nos chips e no anel; a tarefa em andamento aparece embaixo do tempo; o número de bambus fica ao lado do Papp.</p></div>
         <div class="card"><span class="tag">2 · Feedback</span><p>O anel avança a cada segundo, o Papp muda de expressão e fala, o sino toca no fim do ciclo e um aviso confirma “Mais um bambu!”.</p></div>
@@ -366,12 +366,18 @@
       <h2 id="t4">Avaliação e validação</h2>
 
       <h3>Auditoria e correções</h3>
-      <p>Duas fontes: o relatório da beta tester e estudante de Psicologia Juliana Souza sobre o PAPP, e uma inspeção heurística feita pelo grupo. Severidade na escala de Nielsen (0 = não é problema, 4 = catástrofe).</p>
+      <p>Três fontes: a inspeção heurística da tela principal do PAPP feita pelo grupo, o relatório da beta tester e estudante de Psicologia Juliana Souza, e a medição de contraste das cores. Os contrastes do PAPP foram medidos no print, por isso são aproximados. Severidade na escala de Nielsen (0 = não é problema, 4 = catástrofe).</p>
       <div class="table-box">
         <table>
           <caption>Problemas encontrados e soluções</caption>
           <thead><tr><th scope="col">Tela</th><th scope="col">Problema (antes)</th><th scope="col">Teoria</th><th scope="col">Sev.</th><th scope="col">Solução (depois)</th></tr></thead>
           <tbody>
+            <tr><td>Topo (PAPP)</td><td>Botão “Testar Alerta”, uma função de teste do desenvolvedor, ocupava o lugar mais visível da tela.</td><td>H8 Estética e design minimalista</td><td>2</td><td>Removido. O topo agora tem só a marca, o “Preciso de calma” e o menu.</td></tr>
+            <tr><td>Topo (PAPP)</td><td>“Sair” em vermelho no topo: um toque sem querer encerrava a sessão.</td><td>H5 Prevenção de erros</td><td>3</td><td>“Sair da conta” foi para o menu Conta e ajustes, longe das ações do dia a dia.</td></tr>
+            <tr><td>Topo (PAPP)</td><td>Subtítulo em inglês e em maiúsculas (“A NEURODIVERSITY &amp; ACCESSIBILITY TOOL”).</td><td>H2 Correspondência com o mundo real; maiúsculas dificultam a leitura para pessoas com dislexia</td><td>2</td><td>Removido; toda a interface em português, sem blocos em maiúsculas.</td></tr>
+            <tr><td>Timer (PAPP)</td><td>Botão “Iniciar Foco” com texto branco sobre azul #7998B5: cerca de 3,0:1.</td><td>WCAG 1.4.3 Contraste mínimo</td><td>3</td><td>Botão principal verde #2C7A55 com texto branco: 5,22:1.</td></tr>
+            <tr><td>Timer (PAPP)</td><td>Modos inativos (“Curto”, “Longo”) em cinza claro sobre cinza: cerca de 2,7:1.</td><td>WCAG 1.4.3 e H1 Visibilidade</td><td>2</td><td>Chips com borda e texto #4F7060 sobre branco (5,50:1); o modo ativo fica cheio de verde.</td></tr>
+            <tr><td>Geral (PAPP)</td><td>Emojis usados como ícones: aparência muda entre aparelhos e o leitor de tela lê o nome do emoji.</td><td>H4 Consistência e padrões; WCAG 1.1.1</td><td>1</td><td>Ícones SVG próprios com <code>aria-hidden="true"</code> e texto visível ao lado.</td></tr>
             <tr><td>Todas</td><td>Não havia acesso rápido a ferramentas de calma numa crise.</td><td>H7 Flexibilidade e eficiência de uso</td><td>4</td><td>Botão fixo “Preciso de calma” com respiração, aterramento, psicóloga, CVV e SAMU.</td></tr>
             <tr><td>Tarefas</td><td>O lembrete era um alarme contínuo, que gerava sobrecarga sensorial.</td><td>H3 Controle e liberdade do usuário</td><td>3</td><td>Sino único e suave, com opção “Iniciar Pomodoro” ou “Agora não”.</td></tr>
             <tr><td>Abertura</td><td>Com o servidor gratuito “dormindo”, o app parecia travado.</td><td>H1 Visibilidade do status do sistema</td><td>3</td><td>Aviso “Acordando o servidor…” e sessão salva no aparelho.</td></tr>
@@ -382,8 +388,8 @@
         </table>
       </div>
       <div class="two">
-        <figure><div class="shot">Print ANTES (PAPP)<br><code>img/antes-1.png</code></div><figcaption>Versão inicial.</figcaption></figure>
-        <figure><div class="shot">Print DEPOIS (SafeHaven)<br><code>img/depois-1.png</code></div><figcaption>Versão corrigida.</figcaption></figure>
+        <figure><div class="shot" style="padding:12px;min-height:0"><img src="img/papp-antes.jpg" alt="Tela principal do PAPP: cabeçalho com subtítulo em inglês, botões Testar Alerta e Sair, abas Timer e Ruído Marrom e Técnicas de Alívio, cronômetro 25:00 e botão Iniciar Foco em azul claro." width="700" loading="lazy" style="max-height:620px;width:auto"></div><figcaption><strong>Antes (PAPP):</strong> contraste baixo, botão de teste e “Sair” no topo, emojis como ícones.</figcaption></figure>
+        <figure><div class="shot" style="padding:12px;min-height:0"><img src="img/safehaven-foco.jpg" alt="Tela Foco do SafeHaven: cabeçalho com Preciso de calma, Papp falando, chips de modo e botão Pausar." width="700" loading="lazy" style="max-height:620px;width:auto"></div><figcaption><strong>Depois (SafeHaven):</strong> “Preciso de calma” no lugar do teste, Papp dando feedback, contraste AA.</figcaption></figure>
       </div>
 
       <h3>Dark patterns que evitamos</h3>
@@ -420,6 +426,8 @@
             <tr><td>Falta de atalho para crise</td><td>Beta test</td><td>Aplicada</td></tr>
             <tr><td>Alarme contínuo nos lembretes</td><td>Beta test</td><td>Aplicada</td></tr>
             <tr><td>App parecia travado com o servidor dormindo</td><td>Inspeção do grupo</td><td>Aplicada</td></tr>
+            <tr><td>“Sair” acessível por engano no topo</td><td>Inspeção do grupo</td><td>Aplicada</td></tr>
+            <tr><td>Botão “Iniciar Foco” com contraste de 3,0:1</td><td>Medição de contraste</td><td>Aplicada</td></tr>
             <tr><td><span class="fill inline">o que aparecer nos testes T1–T5</span></td><td>Teste com usuários</td><td><span class="fill inline">aplicada / até a entrega</span></td></tr>
           </tbody>
         </table>
