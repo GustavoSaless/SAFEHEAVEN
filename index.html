@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafeHaven · Defesa de UX/UI · Projeto Integrador</title>
+<meta name="description" content="Documento técnico da defesa de UX/UI do SafeHaven, aplicativo móvel de apoio ao foco e à organização da rotina de estudos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F8F5; --surface:#FFFFFF; --soft:#DDEFE4; --ink:#1C2B24; --muted:#4A5B53;
+    --green:#256B4C; --line:#C9DDD0; --warn-bg:#FFF4D6; --warn-ink:#5C4400; --warn-line:#E2B648;
+    --radius:20px; --max:1080px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+  body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.65 "Atkinson Hyperlegible",system-ui,sans-serif}
+  h1,h2,h3,h4{font-family:Lexend,system-ui,sans-serif;line-height:1.2;margin:0 0 .5em}
+  h1{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:700;letter-spacing:-.01em}
+  h2{font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700}
+  h3{font-size:1.3rem;font-weight:600;margin-top:1.6em}
+  h4{font-size:1.08rem;font-weight:600}
+  p{margin:0 0 1em} ul,ol{margin:0 0 1em;padding-left:1.3em} li{margin:.25em 0}
+  a{color:var(--green);text-underline-offset:3px} a:hover{color:var(--ink)}
+  :focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;z-index:20}
+  .skip:focus{top:12px;color:#fff}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  /* topo */
+  header.top{position:sticky;top:0;z-index:10;background:rgba(244,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 24px;min-height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:Lexend,sans-serif;font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none;margin-right:auto}
+  nav ul{list-style:none;display:flex;flex-wrap:wrap;gap:0 18px;margin:0;padding:0}
+  nav a{display:inline-block;padding:12px 2px;color:var(--muted);text-decoration:none;font-weight:700;font-size:.95rem}
+  nav a[aria-current="true"]{color:var(--green);box-shadow:inset 0 -3px 0 var(--green)}
+  /* hero */
+  .hero{padding:64px 0 40px}
+  .eyebrow{display:inline-block;background:var(--soft);color:var(--green);font-weight:700;font-size:.9rem;border-radius:999px;padding:6px 14px;margin-bottom:18px}
+  .lead{font-size:1.25rem;color:var(--muted);max-width:760px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 28px;color:var(--muted);font-size:.98rem;margin-top:22px}
+  .meta strong{color:var(--ink)}
+  section.block{padding:56px 0;border-top:1px solid var(--line)}
+  .num{font-family:Lexend,sans-serif;color:var(--green);font-weight:700;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .card h3,.card h4{margin-top:0}
+  .tag{display:inline-block;font-size:.82rem;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--soft);color:var(--green);margin-bottom:8px}
+  .fill{background:var(--warn-bg);color:var(--warn-ink);border:2px dashed var(--warn-line);border-radius:14px;padding:12px 16px;margin:0 0 1em;font-size:.97rem}
+  .fill::before{content:"PREENCHER · ";font-weight:700}
+  .fill.inline{display:inline;padding:1px 6px;border-radius:6px;border-width:1px;margin:0}
+  .fill.inline::before{content:""}
+  figure{margin:0 0 1.2em}
+  .shot{background:var(--surface);border:2px dashed var(--line);border-radius:var(--radius);min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:20px;font-size:.95rem}
+  .shot img{max-width:100%;height:auto;border-radius:12px;display:block}
+  figcaption{color:var(--muted);font-size:.92rem;margin-top:8px}
+  .table-box{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin:0 0 1.2em}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:.96rem}
+  caption{text-align:left;padding:16px 18px 4px;font-family:Lexend,sans-serif;font-weight:600}
+  th,td{text-align:left;vertical-align:top;padding:12px 18px;border-bottom:1px solid var(--line)}
+  thead th{background:var(--soft);font-weight:700}
+  tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
+  .two{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+  .quote{border-left:0;background:var(--soft);border-radius:var(--radius);padding:20px 22px;margin:0 0 1em}
+  .persona{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .avatar{width:84px;height:84px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-family:Lexend,sans-serif;font-weight:700;color:var(--green);font-size:1.6rem}
+  .story{counter-reset:q;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));list-style:none;padding:0}
+  .story li{counter-increment:q;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:0}
+  .story li::before{content:"Quadro " counter(q);display:block;font-family:Lexend,sans-serif;font-weight:600;color:var(--green);margin-bottom:6px}
+  .flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;list-style:none;padding:0}
+  .flow li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:0;font-weight:700}
+  .flow li+li::before{content:"→";color:var(--green);margin-right:10px}
+  .tool{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:end}
+  label{font-weight:700;display:block;margin-bottom:6px}
+  input[type=text]{width:100%;font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);min-height:48px}
+  .preview{border-radius:14px;padding:16px;border:1px solid var(--line);min-height:48px}
+  .result{font-family:Lexend,sans-serif;font-weight:700;font-size:1.4rem}
+  .ok{color:var(--green)} .bad{color:#9B1C1C}
+  footer{border-top:1px solid var(--line);padding:36px 0 56px;color:var(--muted);font-size:.95rem}
+  .toc-time td:first-child{white-space:nowrap;font-weight:700}
+  @media print{header.top,.skip{display:none} section.block{break-inside:avoid-page} body{font-size:12pt}}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#topo" aria-label="SafeHaven, início da página">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 5 7v8c0 7 4.6 12 11 14 6.4-2 11-7 11-14V7z" fill="#DDEFE4" stroke="#256B4C" stroke-width="2.4" stroke-linejoin="round"/><path d="M11 16.5l3.4 3.4L21.5 12.5" fill="none" stroke="#256B4C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SafeHaven
+    </a>
+    <nav aria-label="Seções do documento">
+      <ul>
+        <li><a href="#fundamentos">1. Fator humano</a></li>
+        <li><a href="#acessibilidade">2. Acessibilidade</a></li>
+        <li><a href="#processo">3. Processo</a></li>
+        <li><a href="#avaliacao">4. Avaliação</a></li>
+        <li><a href="#conclusao">Conclusão</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+  <div class="wrap hero" id="topo">
+    <span class="eyebrow">Projeto Integrador · Defesa de UX/UI · ADC2</span>
+    <h1>SafeHaven: foco e calma para quem estuda de um jeito diferente</h1>
+    <p class="lead">Aplicativo móvel de apoio ao foco e à organização da rotina de estudos de estudantes neurodivergentes. Une regulação temporal (Pomodoro e lembretes), regulação sensorial (máscara sonora e respiração) e o mascote Papp, com acompanhamento psicológico opcional. Aqui justificamos cada decisão de interface, do problema à validação com usuários.</p>
+    <div class="meta">
+      <span><strong>Grupo:</strong> Gustavo Egilio de Sales, Lucas <span class="fill inline">sobrenome</span> e Matheus <span class="fill inline">sobrenome</span></span>
+      <span><strong>Curso:</strong> Engenharia de Computação · UNISAL</span>
+      <span><strong>Disciplina:</strong> <span class="fill inline">nome da disciplina e professor</span></span>
+      <span><strong>Plataforma:</strong> Android (APK em beta), React + Capacitor</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="table-box">
+      <table class="toc-time">
+        <caption>Roteiro do pitch (10 a 15 minutos)</caption>
+        <thead><tr><th scope="col">Tempo</th><th scope="col">Quem fala</th><th scope="col">Bloco</th><th scope="col">Mensagem principal</th></tr></thead>
+        <tbody>
+          <tr><td>0–2 min</td><td><span class="fill inline">nome</span></td><td>Problema e persona</td><td>Manter a atenção é difícil; o SafeHaven regula o tempo e o ambiente.</td></tr>
+          <tr><td>2–5 min</td><td><span class="fill inline">nome</span></td><td>1. Fator humano</td><td>Modelos mentais reaproveitados e decisões que tiram peso da memória.</td></tr>
+          <tr><td>5–7 min</td><td><span class="fill inline">nome</span></td><td>2. Acessibilidade</td><td>Contraste medido, letras maiores, tema escuro e leitor de tela.</td></tr>
+          <tr><td>7–11 min</td><td><span class="fill inline">nome</span></td><td>3. Processo</td><td>Jornada, storyboard do Pomodoro, evolução PAPP → SafeHaven e Norman.</td></tr>
+          <tr><td>11–14 min</td><td><span class="fill inline">nome</span></td><td>4. Avaliação</td><td>Problemas do beta test, heurística violada, correção e métricas.</td></tr>
+          <tr><td>14–15 min</td><td><span class="fill inline">nome</span></td><td>Conclusão</td><td>Rastreabilidade: dor → decisão → evidência.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <section class="block" id="fundamentos" aria-labelledby="t1">
+    <div class="wrap">
+      <span class="num">Bloco 1</span>
+      <h2 id="t1">Fundamentos e fator humano</h2>
+
+      <h3>O problema</h3>
+      <p>Sustentar a atenção em ambientes digitais é difícil para qualquer estudante, e mais ainda para quem é neurodivergente (TDAH, TEA, dislexia). O ruído do ambiente distrai, o tempo “some”, as tarefas são esquecidas e, nos momentos de ansiedade, não há uma ferramenta à mão para se acalmar. Os apps de produtividade comuns costumam piorar o quadro: muitas opções, notificações agressivas e visual carregado.</p>
+      <div class="quote"><p><strong>Proposta de valor:</strong> um único app, calmo e previsível, que ajuda o estudante a regular o <em>tempo</em> (Pomodoro e lembretes) e o <em>ambiente sensorial</em> (máscara sonora e respiração), guiado pelo panda Papp e, quando houver, ligado à sua psicóloga.</p></div>
+      <p class="fill">Inclua as citações autor-data pedidas no feedback da metodologia: Pomodoro (CIRILLO, 2018), ruído marrom e concentração, tecnologias assistivas. Use as mesmas fontes do documento de metodologia.</p>
+
+      <h3>Perfis de usuário</h3>
+      <div class="grid">
+        <div class="card"><span class="tag">Estudante sem psicóloga</span><p>Cadastro simples. Usa Foco, Alívio e Tarefas.</p></div>
+        <div class="card"><span class="tag">Estudante com psicóloga</span><p>Entra com a chave <code>SH-XXXX-XXXX</code> recebida (no cadastro ou depois, na aba Terapia) e ganha a conversa ao vivo e as receitas e orientações.</p></div>
+        <div class="card"><span class="tag">Psicóloga(o)</span><p>Cadastro com CRP, aprovado pelo admin. Gera chaves, conversa com pacientes e envia orientações.</p></div>
+        <div class="card"><span class="tag">Administrador</span><p>Aprova CRPs e modera contas. Por sigilo, não vê conversas, diários nem receitas.</p></div>
+      </div>
+
+      <h3>Modelos mentais e paradigmas de interação</h3>
+      <p>Cada função foi apoiada em algo que o estudante já sabe usar, para aproximar o <em>modelo mental do usuário</em> do <em>modelo conceitual do sistema</em>:</p>
+      <div class="table-box">
+        <table>
+          <caption>Modelos mentais reaproveitados</caption>
+          <thead><tr><th scope="col">Funcionalidade</th><th scope="col">Modelo mental de origem</th><th scope="col">Decisão de interface</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Pomodoro</th><td>Timer de cozinha / cronômetro do celular</td><td>Anel que esvazia como um relógio, tempo grande no centro, botão Iniciar/Pausar no mesmo lugar.</td></tr>
+            <tr><th scope="row">Tarefas</th><td>Lista de afazeres e alarme</td><td>Campo “O que você precisa fazer?”, categoria e horário opcional; marcar como feita com um toque.</td></tr>
+            <tr><th scope="row">Panda e bambus</th><td>Bichinho virtual (estilo Tamagotchi)</td><td>Cada ciclo de foco rende um bambu; alimentar o Papp vira uma pausa guiada de respiração.</td></tr>
+            <tr><th scope="row">Descarrego mental</th><td>Escrever num papel e queimar</td><td>Duas saídas claras: “Queimar e soltar” (apaga) ou “Salvar no diário”.</td></tr>
+            <tr><th scope="row">Conversa com a psicóloga</th><td>WhatsApp</td><td>Balões de “eu” e “ela”, campo fixo embaixo, indicador de online.</td></tr>
+            <tr><th scope="row">Chave de acesso</th><td>Código de convite</td><td>Formato <code>SH-XXXX-XXXX</code> mostrado no próprio campo.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Paradigmas de interação:</strong> <em>manipulação direta</em> (tocar no chip do modo, arrastar o volume, marcar tarefa), <em>navegação por menu fixo</em> com 5 abas sempre visíveis, <em>interação guiada</em> pelo mascote (o Papp fala o que acontece) e <em>conversação</em> no chat com a profissional.</p>
+
+      <h3>Decisões para reduzir a carga cognitiva</h3>
+      <div class="grid">
+        <div class="card"><h4>Poucas áreas, sempre visíveis</h4><p>Barra inferior com 5 abas (Foco, Alívio, Tarefas, Papp, Terapia), com ícone <em>e</em> texto: reconhecer em vez de lembrar (Nielsen, H6).</p></div>
+        <div class="card"><h4>Atalho “Preciso de calma”</h4><p>Botão fixo no topo de todas as telas. Na crise, ninguém precisa procurar: respiração, aterramento 5-4-3-2-1, psicóloga e CVV 188 a um toque.</p></div>
+        <div class="card"><h4>Menos passos</h4><p>Quando o lembrete da tarefa toca, o app oferece “Iniciar Pomodoro” já com a tarefa carregada. Cada tarefa também tem seu próprio botão de Pomodoro.</p></div>
+        <div class="card"><h4>Uma ação principal por cartão</h4><p>Iniciar/Pausar é o único botão de destaque do cronômetro; reiniciar é um ícone secundário (Lei de Hick).</p></div>
+        <div class="card"><h4>Ambiente sensorial calmo</h4><p>Verde claro, sino suave único (não alarme contínuo), sons gerados no aparelho, respeito ao “reduzir movimento” do sistema.</p></div>
+        <div class="card"><h4>O app lembra por você</h4><p>Sessão salva (abre direto), último som escolhido e preferência “tocar som com o Pomodoro” ficam guardados.</p></div>
+        <div class="card"><h4>Pausa saudável</h4><p>A cada hora de uso, o app pergunta como a pessoa está e sugere água ou respiração.</p></div>
+        <div class="card"><h4>Status sempre visível</h4><p>Quando o servidor gratuito está “dormindo”, aparece “Acordando o servidor…” em vez de o app parecer travado (H1).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="block" id="acessibilidade" aria-labelledby="t2">
+    <div class="wrap">
+      <span class="num">Bloco 2</span>
+      <h2 id="t2">Acessibilidade e inclusão</h2>
+      <p>Seguimos a <abbr title="Web Content Accessibility Guidelines">WCAG</abbr> 2.2, nível AA, organizada nos quatro princípios: perceptível, operável, compreensível e robusto.</p>
+
+      <div class="table-box">
+        <table>
+          <caption>Checklist WCAG aplicada ao SafeHaven</caption>
+          <thead><tr><th scope="col">Princípio</th><th scope="col">Critério</th><th scope="col">Como está no app</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Perceptível</th><td>1.4.3 Contraste mínimo (4,5:1)</td><td>Pares de cor medidos na tabela abaixo; um par ficou no limite e foi corrigido.</td></tr>
+            <tr><th scope="row">Perceptível</th><td>1.1.1 Conteúdo não textual</td><td>O mascote tem <code>role="img"</code> e nome; ícones decorativos têm <code>aria-hidden="true"</code>.</td></tr>
+            <tr><th scope="row">Perceptível</th><td>1.4.4 Redimensionar texto</td><td>Opção “Letras maiores” (+12,5%) e unidades <code>rem</code>; layout testado de 320 px ao desktop.</td></tr>
+            <tr><th scope="row">Perceptível</th><td>1.4.1 Uso de cor</td><td>A aba ativa muda de cor <em>e</em> ganha fundo; o modo do timer aparece escrito.</td></tr>
+            <tr><th scope="row">Operável</th><td>2.5.8 Tamanho do alvo (mín. 24 px)</td><td>Botões com 48 px de altura, botões de ícone 44×44 px, chips 40 px.</td></tr>
+            <tr><th scope="row">Operável</th><td>2.3.3 Animação por interação</td><td>Animações desligadas quando o sistema pede “reduzir movimento”.</td></tr>
+            <tr><th scope="row">Compreensível</th><td>3.3.1 / 3.3.2 Erros e rótulos</td><td>Campos com rótulo visível (“E-mail”, “Senha”); erro em texto com <code>role="alert"</code>.</td></tr>
+            <tr><th scope="row">Robusto</th><td>4.1.2 Nome, função, valor</td><td><code>aria-label</code> em botões só com ícone, <code>role="switch"</code> com <code>aria-checked</code>, <code>aria-current</code> na aba ativa.</td></tr>
+            <tr><th scope="row">Robusto</th><td>4.1.3 Mensagens de status</td><td>Avisos e fala do Papp em <code>aria-live="polite"</code>: o leitor de tela anuncia sem tirar o foco.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Contraste de cores</h3>
+      <p>Valores medidos com a fórmula de luminância da WCAG sobre as cores reais do app (variáveis de <code>styles.css</code>). O medidor abaixo funciona ao vivo na apresentação.</p>
+      <div class="table-box">
+        <table>
+          <caption>Pares de cor do SafeHaven</caption>
+          <thead><tr><th scope="col">Uso</th><th scope="col">Texto</th><th scope="col">Fundo</th><th scope="col">Razão</th><th scope="col">AA texto normal</th></tr></thead>
+          <tbody>
+            <tr><td>Texto principal</td><td>#173A2A</td><td>#EEF7F1</td><td>11,47:1</td><td>Passa</td></tr>
+            <tr><td>Texto secundário</td><td>#4F7060</td><td>#EEF7F1</td><td>5,03:1</td><td>Passa</td></tr>
+            <tr><td>Texto secundário em cartão</td><td>#4F7060</td><td>#FFFFFF</td><td>5,50:1</td><td>Passa</td></tr>
+            <tr><td>Botão principal</td><td>#FFFFFF</td><td>#2C7A55</td><td>5,22:1</td><td>Passa</td></tr>
+            <tr><td>Botão “Preciso de calma”</td><td>#B8442F</td><td>#FBE7E1</td><td>4,51:1</td><td>Passa (no limite)</td></tr>
+            <tr><td>Etiquetas verdes</td><td>#2C7A55</td><td>#E0F2E7</td><td>4,48:1</td><td><strong>Não passa</strong> → corrigido para #236446 (6,04:1)</td></tr>
+            <tr><td>Tema escuro: texto</td><td>#E2F2E8</td><td>#0E1A14</td><td>15,38:1</td><td>Passa</td></tr>
+            <tr><td>Tema escuro: botão</td><td>#0B1F15</td><td>#5CC08C</td><td>7,68:1</td><td>Passa</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" role="group" aria-labelledby="ct">
+        <h4 id="ct">Medidor de contraste (fórmula da WCAG)</h4>
+        <div class="tool">
+          <div><label for="fg">Cor do texto (hex)</label><input type="text" id="fg" value="#2C7A55" autocomplete="off"></div>
+          <div><label for="bgc">Cor do fundo (hex)</label><input type="text" id="bgc" value="#E0F2E7" autocomplete="off"></div>
+          <div class="preview" id="prev" aria-hidden="true">Exemplo de texto no app</div>
+        </div>
+        <p class="result" id="res" aria-live="polite" style="margin-top:14px">—</p>
+      </div>
+
+      <h3>Legibilidade tipográfica</h3>
+      <ul>
+        <li><strong>Nunito</strong>: sem serifa, arredondada e com formas abertas, menos “agressiva” visualmente e fácil de ler em telas pequenas.</li>
+        <li>Corpo de texto em 16 px com peso 500 e entrelinha 1,5; títulos em peso 800 para hierarquia clara.</li>
+        <li>Texto alinhado à esquerda, sem blocos em maiúsculas; o tempo do Pomodoro em tamanho grande no centro do anel.</li>
+        <li>Ajustes do usuário: “Letras maiores” e “Tema escuro” no menu Conta e ajustes.</li>
+      </ul>
+
+      <h3>Suporte estrutural no código</h3>
+      <p>Trechos reais do repositório (React):</p>
+      <div class="card">
+<pre style="overflow-x:auto;margin:0;font-size:.9rem"><code>// Cronômetro: o leitor de tela fala o modo e o tempo restante
+&lt;div className="dial" role="timer" aria-label={`${MODES[t.mode].label}: ${fmt(t.remaining)} restantes`}&gt;
+
+// Botão só com ícone ganha nome
+&lt;button className="icon-btn" onClick={() =&gt; timer.reset()} aria-label="Reiniciar o cronômetro"&gt;
+
+// A fala do Papp é anunciada sem roubar o foco
+&lt;p className="speech" aria-live="polite"&gt;{mascot.text}&lt;/p&gt;
+
+// Aba atual identificada para o TalkBack
+&lt;button aria-current={tab === t.id ? 'page' : undefined}&gt;
+
+// Janelas (respiração, ajustes) são diálogos de verdade
+&lt;div className="sheet" role="dialog" aria-modal="true" aria-label={title}&gt;
+
+// Interruptor acessível
+&lt;button role="switch" aria-checked={checked} aria-label={label} /&gt;</code></pre>
+      </div>
+      <p class="fill">Se der, grave 15 segundos do TalkBack lendo a tela de Foco e coloque o vídeo aqui.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="block" id="processo" aria-labelledby="t3">
+    <div class="wrap">
+      <span class="num">Bloco 3</span>
+      <h2 id="t3">Processo de design e construção</h2>
+
+      <h3>Pesquisa: persona</h3>
+      <p class="fill">Proto-persona montada a partir do público-alvo e do beta test. Ajustem com dados de entrevista ou questionário e digam quantas pessoas participaram.</p>
+      <div class="card persona">
+        <div>
+          <div class="avatar" aria-hidden="true">LM</div>
+          <h4 style="margin-top:12px">Lívia Martins, 20 anos</h4>
+          <p>Estudante do 2º semestre de Análise e Desenvolvimento de Sistemas, com TDAH. Mora em república, estuda à noite e faz acompanhamento com uma psicóloga.</p>
+        </div>
+        <div>
+          <h4>Objetivos</h4>
+          <ul><li>Conseguir estudar 1 hora sem se perder no celular.</li><li>Não esquecer entregas e horários.</li><li>Ter algo rápido para se acalmar antes de prova.</li></ul>
+          <h4>Dores</h4>
+          <ul><li>Barulho da casa tira a concentração.</li><li>Alarmes altos e apps cheios a deixam mais agitada.</li><li>Na ansiedade, não lembra das técnicas que a psicóloga ensinou.</li></ul>
+        </div>
+        <div>
+          <h4>Comportamento digital</h4>
+          <ul><li>Usa o celular o dia todo; desliga notificações que acha excessivas.</li><li>Já tentou apps de Pomodoro, mas abandonou.</li><li>Gosta de recompensas visuais e personagens.</li></ul>
+          <div class="quote" style="margin:0"><p style="margin:0">“Eu só queria um lugar simples, onde eu não precise lembrar de tudo sozinha.”</p></div>
+        </div>
+      </div>
+
+      <h3>Jornada do usuário</h3>
+      <div class="table-box">
+        <table>
+          <caption>Jornada da Lívia numa noite de estudo</caption>
+          <thead><tr><th scope="col">Etapa</th><th scope="col">Ação</th><th scope="col">Pensamento / sentimento</th><th scope="col">Como o SafeHaven responde</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Planejar</th><td>Anota “Revisar Cálculo, 20h”.</td><td>“Se eu não anotar, esqueço.”</td><td>Tarefa com horário e categoria em um único formulário.</td></tr>
+            <tr><th scope="row">Começar</th><td>Às 20h o celular toca.</td><td>Resistência para começar.</td><td>Sino suave e banner “Iniciar Pomodoro” com a tarefa carregada.</td></tr>
+            <tr><th scope="row">Focar</th><td>Estuda 25 min com ruído marrom.</td><td>Incomodada com o barulho da casa.</td><td>Máscara sonora junto com o timer; Papp em modo “foco”.</td></tr>
+            <tr><th scope="row">Pausar</th><td>Ciclo termina.</td><td>Orgulho, cansaço.</td><td>“Ciclo concluído! Ganhei um bambu.” Pausa curta sugerida.</td></tr>
+            <tr><th scope="row">Crise</th><td>Lembra da prova e fica ansiosa.</td><td>Coração acelerado, mente em branco.</td><td>“Preciso de calma” no topo: respiração guiada em 1 toque.</td></tr>
+            <tr><th scope="row">Desabafar</th><td>Quer contar para a psicóloga.</td><td>“Não quero esperar até a sessão.”</td><td>Conversa ao vivo na aba Terapia.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Tarefa crítica: cenário de uso e storyboard</h3>
+      <p><strong>Cenário:</strong> são 20h e a Lívia marcou uma tarefa para esse horário. Ela precisa começar a estudar sem se distrair, mesmo com barulho na casa.</p>
+      <ol class="story">
+        <li>O lembrete toca um sino único. No topo aparece “Revisar Cálculo — Chegou a hora que você marcou” com o botão “Iniciar Pomodoro”.</li>
+        <li>Um toque: o app vai para a aba Foco e o cronômetro de 25 minutos já começa, com a tarefa escrita embaixo.</li>
+        <li>O ruído marrom começa junto (preferência salva). O Papp diz: “Vamos lá: Revisar Cálculo”.</li>
+        <li>O anel esvazia aos poucos. Lívia vê quanto falta sem precisar fazer contas.</li>
+        <li>Ao terminar, o sino toca, o som para e o Papp comemora: “Ganhei um bambu. Que tal uma pausa?”.</li>
+        <li>Na pausa, ela alimenta o Papp: enquanto ele mastiga, uma barra guia 4 segundos de respiração.</li>
+      </ol>
+      <p class="fill">Se o grupo desenhar o storyboard (à mão ou no Figma), substitua os quadros por imagens.</p>
+
+      <h3>Evolução da fidelidade</h3>
+      <h4>Arquitetura da informação</h4>
+      <div class="table-box">
+        <table>
+          <caption>Estrutura de navegação do estudante</caption>
+          <thead><tr><th scope="col">Área</th><th scope="col">Conteúdo</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Foco</th><td>Papp e bambus · Pomodoro (foco, pausa curta, pausa longa) · Máscara sonora (ruído marrom, chuva, ondas, riacho, brisa)</td></tr>
+            <tr><th scope="row">Alívio</th><td>Respiração quadrada · Aterramento 5-4-3-2-1 · Descarrego mental (queimar ou salvar no diário)</td></tr>
+            <tr><th scope="row">Tarefas</th><td>Nova tarefa (texto, categoria, horário) · Lista · Pomodoro por tarefa</td></tr>
+            <tr><th scope="row">Terapia</th><td>Chave de acesso · Conversa ao vivo · Receitas e orientações</td></tr>
+            <tr><th scope="row">Sempre visível</th><td>“Preciso de calma” no topo · Menu Conta e ajustes (tema escuro, letras maiores, fale com a equipe, sair)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two">
+        <figure><div class="shot">Rabiscoframe / fluxograma (baixa fidelidade)<br><code>img/baixa-fidelidade.png</code></div><figcaption>Baixa fidelidade: estrutura e ordem das telas.</figcaption></figure>
+        <figure><div class="shot">Protótipo Figma/Penpot ou print do app (alta fidelidade)<br><code>img/alta-fidelidade.png</code></div><figcaption>Alta fidelidade: identidade SafeHaven, verde claro e Papp.</figcaption></figure>
+      </div>
+      <p><strong>De PAPP para SafeHaven:</strong> a primeira versão (PAPP) usava alarme contínuo nos lembretes e não tinha atalho para momentos de crise. A versão atual ganhou nome e identidade mais profissionais (verde claro, tipografia arredondada), criou o atalho de calma, ampliou a máscara sonora para cinco sons gerados no próprio aparelho (funcionam sem internet) e adicionou tema escuro e letras maiores. O módulo de chat com inteligência artificial saiu do escopo para manter o foco do produto.</p>
+      <p class="fill">Coloquem prints do PAPP antigo ao lado do SafeHaven para mostrar essa evolução.</p>
+
+      <h3>Princípios de Norman na tela principal (Foco)</h3>
+      <figure><div class="shot">Print da tela Foco com as áreas numeradas de 1 a 4<br><code>img/norman-foco.png</code></div></figure>
+      <div class="grid">
+        <div class="card"><span class="tag">1 · Visibilidade</span><p>O modo atual (Foco 25 min, pausas) está escrito nos chips e no anel; a tarefa em andamento aparece embaixo do tempo; o número de bambus fica ao lado do Papp.</p></div>
+        <div class="card"><span class="tag">2 · Feedback</span><p>O anel avança a cada segundo, o Papp muda de expressão e fala, o sino toca no fim do ciclo e um aviso confirma “Mais um bambu!”.</p></div>
+        <div class="card"><span class="tag">3 · Mapeamento</span><p>O anel que se esvazia corresponde ao tempo que passa; o controle de volume aumenta da esquerda para a direita; Iniciar e Pausar ocupam o mesmo lugar porque são a mesma ação.</p></div>
+        <div class="card"><span class="tag">4 · Affordance</span><p>Chips com borda arredondada parecem botões de escolha; o botão principal é cheio e verde com ícone de play; o controle deslizante tem um puxador para arrastar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="block" id="avaliacao" aria-labelledby="t4">
+    <div class="wrap">
+      <span class="num">Bloco 4</span>
+      <h2 id="t4">Avaliação e validação</h2>
+
+      <h3>Auditoria e correções</h3>
+      <p>Duas fontes: o relatório da beta tester e estudante de Psicologia Juliana Souza sobre o PAPP, e uma inspeção heurística feita pelo grupo. Severidade na escala de Nielsen (0 = não é problema, 4 = catástrofe).</p>
+      <div class="table-box">
+        <table>
+          <caption>Problemas encontrados e soluções</caption>
+          <thead><tr><th scope="col">Tela</th><th scope="col">Problema (antes)</th><th scope="col">Teoria</th><th scope="col">Sev.</th><th scope="col">Solução (depois)</th></tr></thead>
+          <tbody>
+            <tr><td>Todas</td><td>Não havia acesso rápido a ferramentas de calma numa crise.</td><td>H7 Flexibilidade e eficiência de uso</td><td>4</td><td>Botão fixo “Preciso de calma” com respiração, aterramento, psicóloga, CVV e SAMU.</td></tr>
+            <tr><td>Tarefas</td><td>O lembrete era um alarme contínuo, que gerava sobrecarga sensorial.</td><td>H3 Controle e liberdade do usuário</td><td>3</td><td>Sino único e suave, com opção “Iniciar Pomodoro” ou “Agora não”.</td></tr>
+            <tr><td>Abertura</td><td>Com o servidor gratuito “dormindo”, o app parecia travado.</td><td>H1 Visibilidade do status do sistema</td><td>3</td><td>Aviso “Acordando o servidor…” e sessão salva no aparelho.</td></tr>
+            <tr><td>Foco</td><td>Alimentar o panda incentivava toques rápidos e repetidos, o oposto de acalmar.</td><td>Falha de comunicabilidade: a mensagem do designer (“vá com calma”) não chegava</td><td>2</td><td>Pausa guiada de 4 s com o panda mastigando e uma barra de respiração.</td></tr>
+            <tr><td>Alívio</td><td>O descarrego mental só apagava o texto; não dava para guardar.</td><td>H3 Controle e liberdade do usuário</td><td>2</td><td>Duas saídas: “Queimar e soltar” ou “Salvar no diário”.</td></tr>
+            <tr><td>Etiquetas</td><td>Verde #2C7A55 sobre #E0F2E7 com 4,48:1.</td><td>WCAG 1.4.3 Contraste mínimo</td><td>2</td><td>Texto da etiqueta escurecido para #236446 (6,04:1).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two">
+        <figure><div class="shot">Print ANTES (PAPP)<br><code>img/antes-1.png</code></div><figcaption>Versão inicial.</figcaption></figure>
+        <figure><div class="shot">Print DEPOIS (SafeHaven)<br><code>img/depois-1.png</code></div><figcaption>Versão corrigida.</figcaption></figure>
+      </div>
+
+      <h3>Dark patterns que evitamos</h3>
+      <div class="grid">
+        <div class="card"><h4>Sem punição por ausência</h4><p>Nada de sequências que se perdem ou panda triste para culpar quem ficou dias sem abrir. Bambus só se ganham, ao concluir ciclos.</p></div>
+        <div class="card"><h4>O app manda descansar</h4><p>Em vez de prender o usuário, a cada hora o app sugere uma pausa. É o contrário de maximizar o tempo de tela.</p></div>
+        <div class="card"><h4>Saída sem fricção</h4><p>“Encerrar vínculo com a psicóloga” e “Sair da conta” são ações diretas, sem mensagens de culpa.</p></div>
+        <div class="card"><h4>Privacidade de verdade</h4><p>O diário só a própria pessoa lê, nem a psicóloga. O admin não vê conversas nem receitas. Sem anúncios nem cobrança escondida.</p></div>
+      </div>
+
+      <h3>Testes com usuários</h3>
+      <p><strong>Protocolo:</strong> teste moderado com <span class="fill inline">n</span> participantes do público-alvo, no APK Android, com a técnica de pensar em voz alta. Cada um faz as tarefas sem ajuda; medimos o tempo com cronômetro e contamos erros (toque errado, voltar de tela, pedir ajuda).</p>
+      <div class="table-box">
+        <table>
+          <caption>Métricas por tarefa</caption>
+          <thead><tr><th scope="col">Tarefa</th><th scope="col">Tempo médio</th><th scope="col">Taxa de sucesso</th><th scope="col">Erros por usuário</th><th scope="col">Meta</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">T1. Criar conta</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 60 s</td></tr>
+            <tr><th scope="row">T2. Iniciar um Pomodoro com ruído marrom</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 20 s</td></tr>
+            <tr><th scope="row">T3. Criar tarefa com horário e iniciar o Pomodoro por ela</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 45 s</td></tr>
+            <tr><th scope="row">T4. Achar e começar uma respiração guiada</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 10 s</td></tr>
+            <tr><th scope="row">T5. Ativar o tema escuro e letras maiores</th><td><span class="fill inline">s</span></td><td><span class="fill inline">%</span></td><td><span class="fill inline">n</span></td><td>até 20 s</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Taxa de sucesso = tarefas concluídas sem ajuda ÷ tentativas. Taxa de erro = total de erros ÷ participantes. Os relatos qualitativos do beta test do APK entram ao lado dos números, como sugerido no feedback da metodologia.</p>
+
+      <h3>Correções de alta severidade</h3>
+      <div class="table-box">
+        <table>
+          <caption>Itens de severidade 3 e 4</caption>
+          <thead><tr><th scope="col">Problema</th><th scope="col">Origem</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            <tr><td>Falta de atalho para crise</td><td>Beta test</td><td>Aplicada</td></tr>
+            <tr><td>Alarme contínuo nos lembretes</td><td>Beta test</td><td>Aplicada</td></tr>
+            <tr><td>App parecia travado com o servidor dormindo</td><td>Inspeção do grupo</td><td>Aplicada</td></tr>
+            <tr><td><span class="fill inline">o que aparecer nos testes T1–T5</span></td><td>Teste com usuários</td><td><span class="fill inline">aplicada / até a entrega</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="conclusao" aria-labelledby="t5">
+    <div class="wrap">
+      <span class="num">Fechamento</span>
+      <h2 id="t5">Conclusão</h2>
+      <p>O SafeHaven foi desenhado a partir das dores reais de estudantes neurodivergentes: menos estímulo, menos coisa para lembrar e mais previsibilidade. Cada dor da persona se liga a uma decisão de interface e a uma forma de validação:</p>
+      <div class="table-box">
+        <table>
+          <caption>Rastreabilidade: dor → decisão → evidência</caption>
+          <thead><tr><th scope="col">Dor da persona</th><th scope="col">Decisão de interface</th><th scope="col">Como validamos</th></tr></thead>
+          <tbody>
+            <tr><td>Barulho tira a concentração</td><td>Máscara sonora que toca junto com o Pomodoro</td><td>T2</td></tr>
+            <tr><td>Esquece tarefas e horários</td><td>Lembrete suave com “Iniciar Pomodoro”</td><td>T3</td></tr>
+            <tr><td>Alarmes e apps cheios a agitam</td><td>Sino único, 5 áreas, uma ação principal</td><td>Beta test e pensar em voz alta</td></tr>
+            <tr><td>Na ansiedade, não lembra das técnicas</td><td>“Preciso de calma” fixo em todas as telas</td><td>T4</td></tr>
+            <tr><td>Precisa de leitura confortável</td><td>Letras maiores, tema escuro, contraste AA</td><td>T5 e medição de contraste</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fill">Próximos passos (ex.: testes com mais participantes, versão iOS, publicação na Play Store).</p>
+
+      <h3>Referências</h3>
+      <ul>
+        <li>BARBOSA, S. D. J.; SILVA, B. S. <em>Interação Humano-Computador</em>. Rio de Janeiro: Elsevier, 2010.</li>
+        <li>CIRILLO, F. <em>The Pomodoro Technique</em>. New York: Currency, 2018.</li>
+        <li>NIELSEN, J. <em>10 Usability Heuristics for User Interface Design</em>. Nielsen Norman Group, 1994 (atualizado em 2024).</li>
+        <li>NORMAN, D. <em>O design do dia a dia</em>. Rio de Janeiro: Rocco, 2006.</li>
+        <li>PREECE, J.; ROGERS, Y.; SHARP, H. <em>Design de Interação</em>. Porto Alegre: Bookman, 2013.</li>
+        <li>W3C. <em>Web Content Accessibility Guidelines (WCAG) 2.2</em>. 2023.</li>
+        <li><span class="fill inline">referências do documento de metodologia (ruído marrom, tecnologias assistivas)</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>SafeHaven · Projeto Integrador · UNISAL · 2026. Este site é o documento técnico da defesa de UX/UI do grupo.</p>
+  </div>
+</footer>
+
+<script>
+  // Medidor de contraste (fórmula de luminância relativa da WCAG 2.x)
+  (function () {
+    var fg = document.getElementById('fg'), bg = document.getElementById('bgc'),
+        res = document.getElementById('res'), prev = document.getElementById('prev');
+    function parse(h) {
+      h = (h || '').trim().replace('#', '');
+      if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join('');
+      if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+      return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16) / 255; });
+    }
+    function lum(c) {
+      var v = c.map(function (x) { return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+      return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    }
+    function update() {
+      var a = parse(fg.value), b = parse(bg.value);
+      if (!a || !b) { res.textContent = 'Digite as duas cores no formato #RRGGBB.'; res.className = 'result'; return; }
+      var l1 = lum(a), l2 = lum(b), r = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+      prev.style.color = '#' + fg.value.trim().replace('#', ''); prev.style.background = '#' + bg.value.trim().replace('#', '');
+      var ok = r >= 4.5, big = r >= 3;
+      res.textContent = r.toFixed(2).replace('.', ',') + ':1 · ' + (ok ? 'passa no AA para texto normal' : big ? 'passa só para texto grande (AA)' : 'não passa no AA');
+      res.className = 'result ' + (ok ? 'ok' : 'bad');
+    }
+    fg.addEventListener('input', update); bg.addEventListener('input', update); update();
+
+    // destaca no menu a seção que está na tela
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav a'));
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          links.forEach(function (l) { l.setAttribute('aria-current', l.getAttribute('href') === '#' + e.target.id ? 'true' : 'false'); });
+        });
+      }, { rootMargin: '-40% 0px -55% 0px' });
+      document.querySelectorAll('section.block').forEach(function (s) { io.observe(s); });
+    }
+  })();
+</script>
+</body>
+</html>
